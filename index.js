@@ -52,7 +52,9 @@ bot.command('start', async (ctx) => {
 
 // const username = ctx.from.username;
  
- const inlineKeyboard = new InlineKeyboard().text('+', 'add').text('плюс за другого', 'addDif').text('-', 'remove').text('убрать плюс друга', 'removeDif');
+const inlineKeyboard = new InlineKeyboard().text('+', 'add').text('плюс за другого', 'addDif')
+    .row().text('-', 'remove').text('убрать плюс друга', 'removeDif').row()
+    .text('обновить', 'renew').text('очистить список', 'clear')
 
 bot.command('plus', async (ctx) => {
     // const inlineKeyboard = new InlineKeyboard().text('+', 'add').text('-', 'remove');
@@ -87,7 +89,7 @@ bot.command('plus3', async (ctx) => {
         reply_markup: inlineKeyboard
     })
 });
-bot.command('plus2', async (ctx) => {
+bot.command('plus4', async (ctx) => {
     // const inlineKeyboard = new InlineKeyboard().text('+', 'add').text('-', 'remove');
 
     await ctx.reply(`ДЕНЬ: Субота
@@ -101,96 +103,112 @@ bot.command('plus2', async (ctx) => {
 
 const usernames = [];
 
-
-
 bot.callbackQuery('add', async (ctx) => {
+    await ctx.answerCallbackQuery();
     const username = ctx.from.username;
-    const index = usernames.length;
-    const formattedUsernames = `${index + 1}. @${username}`;
-    const lengthArray = usernames.length;
+    const index = usernames.length + 1;
+    const formattedUsernames = `. @${username}`;
     usernames.push(formattedUsernames);
     const userList = usernames.join("\n");
     await ctx.callbackQuery.message.editText(`ДЕНЬ: Понедельник
 20:15/60грн.
 Список гравців: 
 ${userList}
-
-Резерв:`, {
+`, {
         reply_markup: inlineKeyboard,
     });
-    await ctx.answerCallbackQuery();
-    
-    
-})
+   
+});
 
 bot.callbackQuery('addDif', async (ctx) => {
-  const username = ctx.from.username;
-    const index = usernames.length;
-    const formattedUsernames = `${index + 1}. плюс от @${username}`;
-    const lengthArray = usernames.length;
+    await ctx.answerCallbackQuery();
+    const username = ctx.from.username;
+    const index = usernames.length + 1;
+    const formattedUsernames = `. плюс от @${username}`;
     usernames.push(formattedUsernames);
     const userList = usernames.join("\n");
     await ctx.callbackQuery.message.editText(`ДЕНЬ: Понедельник
 20:15/60грн.
 Список гравців: 
 ${userList}
-
-
-Резерв:`, {
+`, {
         reply_markup: inlineKeyboard,
     });
-    await ctx.answerCallbackQuery();
-    
-    
-})
+   
+});
 
 
 bot.callbackQuery('remove', async (ctx) => {
+     await ctx.answerCallbackQuery();
     const username = ctx.from.username;
-    const index = usernames.length;
-    const formattedUsernames = `${index + 1}. @${username}`;
-    const itemToRemove = "formattedUsernames";
-    const indexToRemove = usernames.indexOf(itemToRemove);
-
-  usernames.splice(indexToRemove, 1);
- 
-    console.log(usernames);
+    const index = usernames.length + 1;
+    const formattedUsernames = `. @${username}`;
     const userList = usernames.join("\n");
+    let searchItem = formattedUsernames;
+    const indexf = usernames.indexOf(searchItem);
+    if (indexf > -1) {
+        usernames.splice(indexf, 1);
+    }
+    console.log(indexf);
+    console.log(searchItem);
+    console.log(usernames);
     await ctx.callbackQuery.message.editText(`ДЕНЬ: Понедельник
 20:15/60грн.
 Список гравців: 
 ${userList}
-
-Резерв:`, {
+`, {
         reply_markup: inlineKeyboard,
     });
-    await ctx.answerCallbackQuery();
-    
-    
-})
+   
+});
 
 bot.callbackQuery('removeDif', async (ctx) => {
-    const username = ctx.from.username;
-    const index = usernames.length;
-    const formattedUsernames = `${index + 1}. плюс от  @${username}`;
-    const itemToRemove = "formattedUsernames";
-    const indexToRemove = usernames.indexOf(itemToRemove);
-
-  usernames.splice(indexToRemove, 1);
- 
+    await ctx.answerCallbackQuery();
+   const username = ctx.from.username;
+    const index = usernames.length + 1;
+    const formattedUsernames = `. плюс от @${username}`;
+    const userList = usernames.join("\n");
+    let searchItem = formattedUsernames;
+    const indexf = usernames.indexOf(searchItem);
+    if (indexf > -1) {
+        usernames.splice(indexf, 1);
+    }
+    console.log(indexf);
+    console.log(searchItem);
     console.log(usernames);
+    await ctx.callbackQuery.message.editText(`ДЕНЬ: Понедельник
+20:15/60грн.
+Список гравців: 
+${userList}
+`, {
+        reply_markup: inlineKeyboard,
+    });
+    
+});
+
+bot.callbackQuery('renew', async (ctx) => {
+    await ctx.answerCallbackQuery();
     const userList = usernames.join("\n");
     await ctx.callbackQuery.message.editText(`ДЕНЬ: Понедельник
 20:15/60грн.
 Список гравців: 
 ${userList}
-
-Резерв:`, {
+`, {
         reply_markup: inlineKeyboard,
     });
+    
+});
+bot.callbackQuery('clear', async (ctx) => {
     await ctx.answerCallbackQuery();
+     const userList = usernames.join("\n");
+    usernames.splice(0, usernames.length);
+    await ctx.callbackQuery.message.editText(`ДЕНЬ: Понедельник
+20:15/60грн.
+Список гравців: 
+${userList}
+`, {
+        reply_markup: inlineKeyboard,
+    });
     
-    
-})
-
+});
 bot.start();
